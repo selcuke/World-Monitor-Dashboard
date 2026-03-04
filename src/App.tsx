@@ -4,6 +4,12 @@ import GlobeVisualization from './components/GlobeVisualization';
 import LiveFeed from './components/LiveFeed';
 import GeopoliticsPanel from './components/GeopoliticsPanel';
 import OsintDirectory from './components/OsintDirectory';
+import MarketsModule from './components/MarketsModule';
+import AgentModule from './components/AgentModule';
+import ReplayModule from './components/ReplayModule';
+import SignalsModule from './components/SignalsModule';
+import WebcamsModule from './components/WebcamsModule';
+import CyberModule from './components/CyberModule';
 
 export default function App() {
   const [activeModule, setActiveModule] = useState('dashboard');
@@ -12,6 +18,7 @@ export default function App() {
     switch (moduleId) {
       case 'osint-maps': return "Main OSINT Map Sites";
       case 'osint-satellite': return "Satellite & Data Sources";
+      case 'osint-data': return "OSINT Data Sources";
       case 'osint-tools': return "Other Map & OSINT Tools";
       case 'osint-resources': return "Additional Tools & Resources";
       default: return undefined;
@@ -91,17 +98,20 @@ export default function App() {
 
         {activeModule === 'analysis' && (
           <div className="flex-1 flex flex-col h-full bg-zinc-950">
-             <div className="p-6 border-b border-zinc-900">
-               <h2 className="text-xl font-bold text-zinc-100">Strategic Analysis</h2>
-               <p className="text-sm text-zinc-500 mt-1">Geopolitical news, treaties, and stability metrics</p>
-             </div>
-             <div className="flex-1 flex justify-center p-6 overflow-hidden">
-               <div className="w-full max-w-4xl h-full border border-zinc-900 rounded-xl overflow-hidden shadow-2xl">
+             <div className="flex-1 flex justify-center overflow-hidden">
+               <div className="w-full h-full border-none overflow-hidden">
                  <GeopoliticsPanel fullWidth />
                </div>
              </div>
           </div>
         )}
+
+        {activeModule === 'cyber' && <CyberModule />}
+        {activeModule === 'markets' && <MarketsModule />}
+        {activeModule === 'webcams' && <WebcamsModule />}
+        {activeModule === 'agent' && <AgentModule />}
+        {activeModule === 'replay' && <ReplayModule />}
+        {activeModule === 'signals' && <SignalsModule />}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Newspaper, FileText, BarChart3, TrendingDown, TrendingUp, Minus, AlertCircle } from 'lucide-react';
+import { Newspaper, FileText, BarChart3, TrendingDown, TrendingUp, Minus, AlertCircle, Bot } from 'lucide-react';
 
 const mockNews = [
   { id: 1, headline: 'UN Security Council convenes emergency session on Baltic Sea anomaly', source: 'Reuters', time: '10m ago', impact: 'high' },
@@ -71,8 +71,22 @@ export default function GeopoliticsPanel({ fullWidth = false }: { fullWidth?: bo
             <p className="text-zinc-500 text-xs font-mono uppercase tracking-wider">Global Geopolitics Overview</p>
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
-          {/* News Column */}
+        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+          
+          {/* AI Executive Briefing */}
+          <div className="mb-8 bg-purple-950/20 border border-purple-900/50 rounded-xl p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Bot className="w-5 h-5 text-purple-400" />
+              <h3 className="text-sm font-bold text-purple-300 uppercase tracking-wider">AI Executive Briefing</h3>
+              <span className="text-[10px] font-mono text-purple-500 bg-purple-900/30 px-2 py-0.5 rounded ml-auto">UPDATED LIVE</span>
+            </div>
+            <p className="text-sm text-zinc-300 leading-relaxed">
+              <strong>Summary:</strong> Global threat level remains ELEVATED (DEFCON 3). Key developments include increased GPS jamming in Eastern Europe and a 2.3% surge in Wheat futures following Black Sea naval repositioning. Cyber activity targeting financial infrastructure has spiked in the last 24 hours. AI models predict a 32% probability of a ceasefire in major conflict zones by 2026.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* News Column */}
           <div className="space-y-4">
             <h3 className="text-sm font-mono font-semibold text-zinc-400 uppercase tracking-wider flex items-center gap-2 border-b border-zinc-800 pb-2">
               <Newspaper className="w-4 h-4" /> Global News
@@ -159,6 +173,7 @@ export default function GeopoliticsPanel({ fullWidth = false }: { fullWidth?: bo
                 </div>
               ))}
             </div>
+          </div>
           </div>
         </div>
       </div>

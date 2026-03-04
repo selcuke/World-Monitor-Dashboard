@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, AlertTriangle, Plane, Ship, Shield, Zap, ActivitySquare } from 'lucide-react';
+import { Activity, AlertTriangle, Plane, Ship, Shield, Zap, ActivitySquare, ShieldAlert, Radio, Users } from 'lucide-react';
 
 const mockEvents = [
   { id: 1, type: 'flight', message: 'Unidentified military aircraft detected over Baltic Sea', time: 'Just now', severity: 'medium', icon: Plane, coords: '55.7°N 19.3°E' },
   { id: 2, type: 'naval', message: 'Dark vessel movement near South China Sea', time: '2m ago', severity: 'high', icon: Ship, coords: '15.2°N 115.0°E' },
   { id: 3, type: 'conflict', message: 'Artillery fire reported in Eastern Ukraine', time: '5m ago', severity: 'critical', icon: AlertTriangle, coords: '48.5°N 37.9°E' },
   { id: 4, type: 'base', message: 'Increased activity at US Base in Middle East', time: '12m ago', severity: 'low', icon: Shield, coords: '25.2°N 51.5°E' },
-  { id: 5, type: 'flight', message: 'Reconnaissance drone active over Black Sea', time: '15m ago', severity: 'medium', icon: Plane, coords: '43.1°N 34.2°E' },
-  { id: 6, type: 'naval', message: 'Carrier strike group repositioning', time: '22m ago', severity: 'high', icon: Ship, coords: '35.1°N 140.2°E' },
-  { id: 7, type: 'infra', message: 'Undersea cable anomaly detected', time: '1h ago', severity: 'critical', icon: Zap, coords: '51.2°N 2.5°E' },
+  { id: 5, type: 'cyber', message: 'DDoS attack targeting financial infrastructure', time: '14m ago', severity: 'critical', icon: ShieldAlert, coords: 'Unknown' },
+  { id: 6, type: 'flight', message: 'Reconnaissance drone active over Black Sea', time: '15m ago', severity: 'medium', icon: Plane, coords: '43.1°N 34.2°E' },
+  { id: 7, type: 'naval', message: 'Carrier strike group repositioning', time: '22m ago', severity: 'high', icon: Ship, coords: '35.1°N 140.2°E' },
+  { id: 8, type: 'infra', message: 'Undersea cable anomaly detected', time: '1h ago', severity: 'critical', icon: Zap, coords: '51.2°N 2.5°E' },
 ];
 
 export default function LiveFeed({ fullHeight = false }: { fullHeight?: boolean }) {
@@ -72,6 +73,9 @@ export default function LiveFeed({ fullHeight = false }: { fullHeight?: boolean 
         { type: 'conflict', message: 'Border skirmish reported', severity: 'high', icon: AlertTriangle, coords: '33.8°N 35.5°E' },
         { type: 'base', message: 'Troop movement detected at forward operating base', severity: 'medium', icon: Shield, coords: '34.5°N 69.1°E' },
         { type: 'infra', message: 'GPS jamming reported in region', severity: 'high', icon: Zap, coords: '54.7°N 20.5°E' },
+        { type: 'cyber', message: 'DDoS attack targeting financial infrastructure', severity: 'critical', icon: ShieldAlert, coords: 'Unknown' },
+        { type: 'nuclear', message: 'Anomalous radiation spike detected', severity: 'critical', icon: Radio, coords: '47.8°N 35.1°E' },
+        { type: 'election', message: 'Polling station unrest reported', severity: 'medium', icon: Users, coords: '41.0°N 28.9°E' },
       ];
       const randomEvent = randomEvents[Math.floor(Math.random() * randomEvents.length)];
       const newEvent = { ...randomEvent, id: Date.now(), time: 'Just now', timestamp: Date.now() };

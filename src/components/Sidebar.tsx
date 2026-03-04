@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Database, Activity, ShieldAlert, Map, Satellite, Terminal, Layers } from 'lucide-react';
+import { Globe, Database, Activity, ShieldAlert, Map, Satellite, Terminal, Layers, TrendingUp, Bot, History, Radio, Camera, Server } from 'lucide-react';
 
 interface SidebarProps {
   activeModule: string;
@@ -11,12 +11,19 @@ export default function Sidebar({ activeModule, setActiveModule }: SidebarProps)
     { id: 'dashboard', name: 'Global Dashboard', icon: Globe },
     { id: 'feed', name: 'Live Intelligence', icon: Activity },
     { id: 'analysis', name: 'Strategic Analysis', icon: ShieldAlert },
+    { id: 'cyber', name: 'Cyber Threats', icon: Server },
+    { id: 'markets', name: 'Markets & Resources', icon: TrendingUp },
+    { id: 'webcams', name: 'Public Webcams', icon: Camera },
+    { id: 'agent', name: 'AI Investigation Agent', icon: Bot },
+    { id: 'signals', name: 'Signals & GPS Jamming', icon: Radio },
+    { id: 'replay', name: 'Historical Replays', icon: History },
   ];
 
   const sourceModules = [
     { id: 'osint-all', name: 'All Sources Directory', icon: Database },
     { id: 'osint-maps', name: 'Main OSINT Maps', icon: Map },
     { id: 'osint-satellite', name: 'Satellite & Data', icon: Satellite },
+    { id: 'osint-data', name: 'OSINT Data Sources', icon: Database },
     { id: 'osint-tools', name: 'Map & OSINT Tools', icon: Terminal },
     { id: 'osint-resources', name: 'Additional Resources', icon: Layers },
   ];
