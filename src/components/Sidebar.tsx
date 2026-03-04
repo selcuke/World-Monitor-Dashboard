@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Database, Activity, ShieldAlert, Map, Satellite, Terminal, Layers, TrendingUp, Bot, History, Radio, Camera, Server } from 'lucide-react';
+import { Globe, Database, Activity, ShieldAlert, Map, Satellite, Terminal, Layers, TrendingUp, Bot, History, Radio, Camera, Server, Plane, Ship, Rocket, Car } from 'lucide-react';
 
 interface SidebarProps {
   activeModule: string;
@@ -21,6 +21,10 @@ export default function Sidebar({ activeModule, setActiveModule }: SidebarProps)
 
   const sourceModules = [
     { id: 'osint-all', name: 'All Sources Directory', icon: Database },
+    { id: 'osint-air', name: 'Air Traffic & Aviation', icon: Plane },
+    { id: 'osint-sea', name: 'Maritime & Shipping', icon: Ship },
+    { id: 'osint-space', name: 'Space & Orbital', icon: Rocket },
+    { id: 'osint-ground', name: 'Ground & Land', icon: Car },
     { id: 'osint-maps', name: 'Main OSINT Maps', icon: Map },
     { id: 'osint-satellite', name: 'Satellite & Data', icon: Satellite },
     { id: 'osint-data', name: 'OSINT Data Sources', icon: Database },

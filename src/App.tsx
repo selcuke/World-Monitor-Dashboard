@@ -16,6 +16,10 @@ export default function App() {
 
   const getCategoryFilter = (moduleId: string) => {
     switch (moduleId) {
+      case 'osint-air': return "Air Traffic & Aviation";
+      case 'osint-sea': return "Maritime & Shipping";
+      case 'osint-space': return "Space & Orbital Tracking";
+      case 'osint-ground': return "Ground & Land Tracking";
       case 'osint-maps': return "Main OSINT Map Sites";
       case 'osint-satellite': return "Satellite & Data Sources";
       case 'osint-data': return "OSINT Data Sources";

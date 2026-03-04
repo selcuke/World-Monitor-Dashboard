@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { osintLinks } from '../data/links';
-import { ExternalLink, Map, Satellite, Terminal, Globe, Search } from 'lucide-react';
+import { ExternalLink, Map, Satellite, Terminal, Globe, Search, Plane, Ship, Rocket, Car, Database } from 'lucide-react';
 
 export default function OsintDirectory({ categoryFilter }: { categoryFilter?: string }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const getIcon = (category: string) => {
+    if (category.includes('Air')) return <Plane className="w-5 h-5 text-sky-400" />;
+    if (category.includes('Maritime')) return <Ship className="w-5 h-5 text-blue-500" />;
+    if (category.includes('Space')) return <Rocket className="w-5 h-5 text-orange-400" />;
+    if (category.includes('Ground')) return <Car className="w-5 h-5 text-amber-600" />;
+    if (category.includes('OSINT Data')) return <Database className="w-5 h-5 text-red-400" />;
     if (category.includes('OSINT')) return <Map className="w-5 h-5 text-blue-400" />;
     if (category.includes('Satellite')) return <Satellite className="w-5 h-5 text-green-400" />;
     if (category.includes('Tools')) return <Terminal className="w-5 h-5 text-purple-400" />;

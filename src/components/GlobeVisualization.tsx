@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Globe from 'react-globe.gl';
+import { Eye, EyeOff } from 'lucide-react';
 import { militaryBases, navalVessels, militaryFlights, satelliteImagery, troopMovements } from '../data/osintData';
 
 export default function GlobeVisualization() {
@@ -16,6 +17,14 @@ export default function GlobeVisualization() {
   // Live Naval Data State
   const [liveVessels, setLiveVessels] = useState<any[]>([]);
   const [isVesselsLoading, setIsVesselsLoading] = useState(true);
+
+  // Layer visibility state
+  const [showConflicts, setShowConflicts] = useState(true);
+  const [showBases, setShowBases] = useState(true);
+  const [showVessels, setShowVessels] = useState(true);
+  const [showFlights, setShowFlights] = useState(true);
+  const [showTroops, setShowTroops] = useState(true);
+  const [showSatellites, setShowSatellites] = useState(true);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -130,60 +139,62 @@ export default function GlobeVisualization() {
 
   // Combine fetched conflicts with OSINT points
   const allPointsData = [
-    ...formattedBases,
-    ...flights.map(f => ({ ...f, size: 0.3 })),
-    ...liveVessels.map(v => ({ ...v, size: 0.5 })),
-    ...troops.map(t => ({ ...t, size: 0.4 })),
-    ...formattedSatellites,
-    ...conflictData
+    ...(showBases ? formattedBases : []),
+    ...(showFlights ? flights.map(f => ({ ...f, size: 0.3 })) : []),
+    ...(showVessels ? liveVessels.map(v => ({ ...v, size: 0.5 })) : []),
+    ...(showTroops ? troops.map(t => ({ ...t, size: 0.4 })) : []),
+    ...(showSatellites ? formattedSatellites : []),
+    ...(showConflicts ? conflictData : [])
   ];
 
   // Create arcs between bases to simulate supply lines / flights
   const arcsData = [];
-  for (let i = 0; i < 15; i++) {
-    const base1 = militaryBases[Math.floor(Math.random() * militaryBases.length)];
-    const base2 = militaryBases[Math.floor(Math.random() * militaryBases.length)];
-    if (base1 !== base2) {
-      arcsData.push({
-        startLat: base1.lat,
-        startLng: base1.lng,
-        endLat: base2.lat,
-        endLng: base2.lng,
-        color: ['#00ff00', '#ffff00'][Math.floor(Math.random() * 2)]
-      });
+  if (showBases) {
+    for (let i = 0; i < 15; i++) {
+      const base1 = militaryBases[Math.floor(Math.random() * militaryBases.length)];
+      const base2 = militaryBases[Math.floor(Math.random() * militaryBases.length)];
+      if (base1 !== base2) {
+        arcsData.push({
+          startLat: base1.lat,
+          startLng: base1.lng,
+          endLat: base2.lat,
+          endLng: base2.lng,
+          color: ['#00ff00', '#ffff00'][Math.floor(Math.random() * 2)]
+        });
+      }
     }
   }
 
   // Create radar rings around major bases, conflict zones, and satellite acquisitions
   const ringsData = [
-    ...militaryBases.slice(0, 5).map(b => ({
+    ...(showBases ? militaryBases.slice(0, 5).map(b => ({
       lat: b.lat,
       lng: b.lng,
       maxR: 15,
       propagationSpeed: 1.5,
       repeatPeriod: 1500,
       color: '#00ff00'
-    })),
-    ...conflictData.slice(0, 3).map(c => ({
+    })) : []),
+    ...(showConflicts ? conflictData.slice(0, 3).map(c => ({
       lat: c.lat,
       lng: c.lng,
       maxR: 25,
       propagationSpeed: 2,
       repeatPeriod: 1000,
       color: '#ff0000'
-    })),
-    ...satelliteImagery.map(s => ({
+    })) : []),
+    ...(showSatellites ? satelliteImagery.map(s => ({
       lat: s.lat,
       lng: s.lng,
       maxR: 8,
       propagationSpeed: 3,
       repeatPeriod: 800,
       color: s.color
-    }))
+    })) : [])
   ];
 
   // Generate polygons to represent satellite imagery footprints (bounding boxes)
-  const polygonsData = satelliteImagery.map(s => {
+  const polygonsData = showSatellites ? satelliteImagery.map(s => {
     const size = 2; // Roughly 2x2 degrees footprint
     return {
       ...s,
@@ -195,22 +206,22 @@ export default function GlobeVisualization() {
         [s.lat - size, s.lng - size]
       ]
     };
-  });
+  }) : [];
 
   // Combine labels for conflicts, bases, satellites, troops, and vessels
   const allLabels = [
-    ...conflictData,
-    ...militaryBases.map(b => ({ ...b, labelColor: 'rgba(100, 255, 100, 0.8)' })),
-    ...troops.map(t => ({ ...t, labelColor: 'rgba(255, 136, 0, 0.8)' })),
-    ...liveVessels.map(v => ({ ...v, labelColor: v.vesselType === 'Dark Vessel' ? 'rgba(150, 150, 150, 0.8)' : 'rgba(59, 130, 246, 0.8)' })),
-    ...satelliteImagery.map(s => {
+    ...(showConflicts ? conflictData : []),
+    ...(showBases ? militaryBases.map(b => ({ ...b, labelColor: 'rgba(100, 255, 100, 0.8)' })) : []),
+    ...(showTroops ? troops.map(t => ({ ...t, labelColor: 'rgba(255, 136, 0, 0.8)' })) : []),
+    ...(showVessels ? liveVessels.map(v => ({ ...v, labelColor: v.vesselType === 'Dark Vessel' ? 'rgba(150, 150, 150, 0.8)' : 'rgba(59, 130, 246, 0.8)' })) : []),
+    ...(showSatellites ? satelliteImagery.map(s => {
       const timeAgo = Math.floor((Date.now() - new Date(s.timestamp).getTime()) / 60000);
       return {
         ...s,
         name: `${s.name} - ${timeAgo}m ago`,
         labelColor: s.color === '#ff00ff' ? 'rgba(255, 0, 255, 0.8)' : 'rgba(0, 255, 255, 0.8)'
       };
-    })
+    }) : [])
   ];
 
   return (
@@ -261,43 +272,65 @@ export default function GlobeVisualization() {
         polygonStrokeColor={(d: any) => d.color}
       />
       
-      <div className="absolute top-4 left-4 pointer-events-none">
-        <div className="bg-black/60 backdrop-blur-md border border-zinc-800 p-3 rounded-lg flex flex-col gap-2">
-          <div className="flex items-center justify-between gap-4 text-xs font-mono text-zinc-400">
+      <div className="absolute top-4 left-4 pointer-events-auto">
+        <div className="bg-black/80 backdrop-blur-md border border-zinc-800 p-4 rounded-lg flex flex-col gap-3 shadow-xl">
+          <h3 className="text-xs font-bold text-zinc-300 uppercase tracking-wider border-b border-zinc-800 pb-2 mb-1">Layer Controls</h3>
+          
+          <button onClick={() => setShowConflicts(!showConflicts)} className="flex items-center justify-between gap-4 text-xs font-mono text-zinc-400 hover:text-zinc-200 transition-colors group">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-red-500"></span> Active Conflicts
+              <span className={`w-2 h-2 rounded-full ${showConflicts ? 'bg-red-500' : 'bg-zinc-700'}`}></span> Active Conflicts
             </div>
-            {isLoading ? (
-              <span className="text-[9px] text-zinc-500 animate-pulse">FETCHING API...</span>
-            ) : (
-              <span className="text-[9px] text-green-500">LIVE DATA</span>
-            )}
-          </div>
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-            <span className="w-2 h-2 rounded-full bg-green-500"></span> Military Bases
-          </div>
-          <div className="flex items-center justify-between gap-4 text-xs font-mono text-zinc-400">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-blue-500"></span> Naval Vessels
+              {isLoading ? (
+                <span className="text-[9px] text-zinc-500 animate-pulse">FETCHING API...</span>
+              ) : (
+                <span className={`text-[9px] ${showConflicts ? 'text-green-500' : 'text-zinc-600'}`}>{showConflicts ? 'LIVE DATA' : 'HIDDEN'}</span>
+              )}
+              {showConflicts ? <Eye className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300" /> : <EyeOff className="w-3.5 h-3.5 text-zinc-600" />}
             </div>
-            {isVesselsLoading ? (
-              <span className="text-[9px] text-zinc-500 animate-pulse">FETCHING AIS...</span>
-            ) : (
-              <span className="text-[9px] text-blue-400">AIS ACTIVE</span>
-            )}
-          </div>
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-            <span className="w-2 h-2 rounded-full bg-yellow-500"></span> Live Flights
-          </div>
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-            <span className="w-2 h-2 rounded-full bg-orange-500"></span> Troop Movements
-          </div>
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-            <span className="w-2 h-2 rounded-full bg-cyan-400"></span> Satellite (Optical)
-          </div>
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-            <span className="w-2 h-2 rounded-full bg-fuchsia-500"></span> Satellite (SAR)
-          </div>
+          </button>
+          
+          <button onClick={() => setShowBases(!showBases)} className="flex items-center justify-between gap-4 text-xs font-mono text-zinc-400 hover:text-zinc-200 transition-colors group">
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${showBases ? 'bg-green-500' : 'bg-zinc-700'}`}></span> Military Bases
+            </div>
+            {showBases ? <Eye className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300" /> : <EyeOff className="w-3.5 h-3.5 text-zinc-600" />}
+          </button>
+          
+          <button onClick={() => setShowVessels(!showVessels)} className="flex items-center justify-between gap-4 text-xs font-mono text-zinc-400 hover:text-zinc-200 transition-colors group">
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${showVessels ? 'bg-blue-500' : 'bg-zinc-700'}`}></span> Naval Vessels
+            </div>
+            <div className="flex items-center gap-2">
+              {isVesselsLoading ? (
+                <span className="text-[9px] text-zinc-500 animate-pulse">FETCHING AIS...</span>
+              ) : (
+                <span className={`text-[9px] ${showVessels ? 'text-blue-400' : 'text-zinc-600'}`}>{showVessels ? 'AIS ACTIVE' : 'HIDDEN'}</span>
+              )}
+              {showVessels ? <Eye className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300" /> : <EyeOff className="w-3.5 h-3.5 text-zinc-600" />}
+            </div>
+          </button>
+          
+          <button onClick={() => setShowFlights(!showFlights)} className="flex items-center justify-between gap-4 text-xs font-mono text-zinc-400 hover:text-zinc-200 transition-colors group">
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${showFlights ? 'bg-yellow-500' : 'bg-zinc-700'}`}></span> Live Flights
+            </div>
+            {showFlights ? <Eye className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300" /> : <EyeOff className="w-3.5 h-3.5 text-zinc-600" />}
+          </button>
+          
+          <button onClick={() => setShowTroops(!showTroops)} className="flex items-center justify-between gap-4 text-xs font-mono text-zinc-400 hover:text-zinc-200 transition-colors group">
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${showTroops ? 'bg-orange-500' : 'bg-zinc-700'}`}></span> Troop Movements
+            </div>
+            {showTroops ? <Eye className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300" /> : <EyeOff className="w-3.5 h-3.5 text-zinc-600" />}
+          </button>
+          
+          <button onClick={() => setShowSatellites(!showSatellites)} className="flex items-center justify-between gap-4 text-xs font-mono text-zinc-400 hover:text-zinc-200 transition-colors group">
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${showSatellites ? 'bg-cyan-400' : 'bg-zinc-700'}`}></span> Satellite Imagery
+            </div>
+            {showSatellites ? <Eye className="w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300" /> : <EyeOff className="w-3.5 h-3.5 text-zinc-600" />}
+          </button>
         </div>
       </div>
     </div>
