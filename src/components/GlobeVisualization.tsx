@@ -103,48 +103,17 @@ export default function GlobeVisualization() {
   }, []);
 
   useEffect(() => {
-    const fetchConflicts = async () => {
-      try {
-        setIsLoading(true);
-        // Fetch Complex Emergencies (Conflicts) from ReliefWeb API
-        const response = await fetch('https://api.reliefweb.int/v1/disasters?appname=worldmonitor&filter[field]=primary_type.code&filter[value]=CE&limit=50&profile=full');
-        if (!response.ok) throw new Error('API failed');
-        const data = await response.json();
-        
-        const conflicts = data.data
-          .filter((d: any) => d.fields?.primary_country?.location)
-          .map((d: any) => ({
-            lat: d.fields.primary_country.location.lat,
-            lng: d.fields.primary_country.location.lon,
-            size: Math.random() * 0.5 + 0.3,
-            color: '#ff0000',
-            type: 'conflict',
-            name: d.fields.name.split('-')[0].trim() // Clean up name
-          }));
-          
-        if (conflicts.length > 0) {
-          setConflictData(conflicts);
-          setIsLoading(false);
-          return;
-        }
-      } catch (error) {
-        console.error("Failed to fetch from ReliefWeb, using fallback data", error);
-      }
-      
-      // Fallback data if API fails or is blocked by CORS
-      setConflictData([
-        { lat: 48.3794, lng: 31.1656, size: 0.8, color: '#ff0000', type: 'conflict', name: 'Ukraine Conflict' },
-        { lat: 31.5, lng: 34.466667, size: 0.7, color: '#ff0000', type: 'conflict', name: 'Gaza Conflict' },
-        { lat: 15.5007, lng: 32.5599, size: 0.6, color: '#ff0000', type: 'conflict', name: 'Sudan Conflict' },
-        { lat: 21.9162, lng: 95.9560, size: 0.5, color: '#ff0000', type: 'conflict', name: 'Myanmar Civil War' },
-        { lat: 34.8021, lng: 38.9968, size: 0.5, color: '#ff0000', type: 'conflict', name: 'Syrian Civil War' },
-        { lat: 15.5527, lng: 48.5164, size: 0.5, color: '#ff0000', type: 'conflict', name: 'Yemen Civil War' },
-        { lat: -4.0383, lng: 21.7587, size: 0.6, color: '#ff0000', type: 'conflict', name: 'DRC Conflict' },
-      ]);
-      setIsLoading(false);
-    };
-
-    fetchConflicts();
+    // Using static data for conflicts to avoid API issues
+    setConflictData([
+      { lat: 48.3794, lng: 31.1656, size: 0.8, color: '#ff0000', type: 'conflict', name: 'Ukraine Conflict' },
+      { lat: 31.5, lng: 34.466667, size: 0.7, color: '#ff0000', type: 'conflict', name: 'Gaza Conflict' },
+      { lat: 15.5007, lng: 32.5599, size: 0.6, color: '#ff0000', type: 'conflict', name: 'Sudan Conflict' },
+      { lat: 21.9162, lng: 95.9560, size: 0.5, color: '#ff0000', type: 'conflict', name: 'Myanmar Civil War' },
+      { lat: 34.8021, lng: 38.9968, size: 0.5, color: '#ff0000', type: 'conflict', name: 'Syrian Civil War' },
+      { lat: 15.5527, lng: 48.5164, size: 0.5, color: '#ff0000', type: 'conflict', name: 'Yemen Civil War' },
+      { lat: -4.0383, lng: 21.7587, size: 0.6, color: '#ff0000', type: 'conflict', name: 'DRC Conflict' },
+    ]);
+    setIsLoading(false);
   }, []);
 
   // Format bases for globe
