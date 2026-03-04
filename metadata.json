@@ -1,0 +1,5 @@
+{
+  "name": "Remix: World Monitor Dashboard",
+  "description": "A global intelligence dashboard tracking geopolitics, military bases, conflicts, and OSINT data.",
+  "requestFramePermissions": []
+}
